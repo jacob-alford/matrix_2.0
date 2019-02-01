@@ -199,6 +199,27 @@ class Matrix{
     Matrix.dispose(this);
     return true;
   }
+  sameAs(b){
+    if(!this.disposed){
+      if(this.shape[0] == b.shape[0]){
+        if(this.shape[1] == b.shape[1]){
+          for(let i=0;i<this.shape[0];i++){
+            for(let j=0;j<this.shape[1];j++){
+              if(this.data[i][j] != b.data[i][j]) return false;
+            }
+          }
+          return true;
+        }else{
+          return false;
+        }
+      }else{
+        return false;
+      }
+    }else{
+      console.error("Matrix has been disposed!");
+      return false;
+    }
+  }
   static scalarOperate(a,fn){
     if(!a.disposed){
       for(let i=0;i<a.shape[0];i++){
@@ -297,6 +318,54 @@ class Matrix{
       }
     }
     return new Matrix(outArr);
+  }
+  static upperTriangular(shape,val = 1){
+    if(shape[0] == shape[1]){
+      let temp = Matrix.fixed(shape);
+      for(let i=0;i<shape[0];i++){
+        for(let j=i;j<shape[1];j++){
+          temp.data[i][j] = val;
+        }
+      }
+      return temp;
+    }else{
+      console.error(`An upper triangular matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
+      return false;
+    }
+  }
+  static lowerTriangular(shape,val = 1){
+    if(shape[0] == shape[1]){
+      let temp = Matrix.fixed(shape,val);
+      for(let i=0;i<shape[0];i++){
+        for(let j=i+1;j<shape[1];j++){
+          temp.data[i][j] = 0;
+        }
+      }
+      return temp;
+    }else{
+      console.error(`An upper triangular matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
+      return false;
+    }
+  }
+  static diagonal(shape,val = 1){
+    if(shape[0] == shape[1]){
+      let temp = Matrix.fixed(shape);
+      for(let i=0;i<shape[0];i++){
+        temp.data[i][i] = val;
+      }
+      return temp;
+    }else{
+      console.error(`An upper triangular matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
+      return false;
+    }
+  }
+  static identity(shape){
+    if(shape[0] == shape[1]){
+      return Matrix.diagonal(shape);
+    }else{
+      console.error(`An upper triangular matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
+      return false;
+    }
   }
   // --- Display ---
   print(verbose = true){
@@ -1059,6 +1128,45 @@ class Matrix{
     }else{
       console.error(`A.disposed = ${a.disposed}; B.disposed = ${b.disposed}`);
       return false;
+    }
+  }
+  cholesky(){
+      if(this.shape[0] == this.shape[1]){
+        if(this.sameAs(this.new().transpose())){
+          let wrkMat = this.new();
+          let s = 0;
+          for(let k=0;k<wrkMat.shape[0];k++){
+              for(let i=0;i<k;i++){
+                  s=0;
+                  for(let j=0;j<i;j++){
+                      s += wrkMat.data[i][j]*wrkMat.data[k][j];
+                  }
+                  wrkMat.data[k][i] = (wrkMat.data[k][i] - s)/wrkMat.data[i][i];
+              }
+              s=0;
+              for(let j=0;j<k;j++){
+                  s = s + Math.pow(wrkMat.data[k][j],2);
+              }
+              if(wrkMat.data[k][k]-s >= 0) wrkMat.data[k][k] = Math.sqrt(wrkMat.data[k][k]-s);
+              else{
+                  console.error("Matrix is not positive definite!");
+                  return false;
+              }
+          }
+          let filter = Matrix.fixed(this.shape,1);
+          for(let i=0;i<this.shape[0];i++){
+            for(let j=i+1;j<this.shape[1];j++){
+              filter.data[i][j] = 0;
+            }
+          }
+          return wrkMat.mul(filter);
+        }else{
+            console.error(`Matrix is not symmetric!`);
+            return false;
+        }
+    }else{
+        console.error(`Matrix is not a square matrix!  Matrix shape: [${this.shape[0]},${this.shape[1]}]`);
+        return false;
     }
   }
 }

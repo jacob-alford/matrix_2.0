@@ -220,6 +220,32 @@ class Matrix{
       return false;
     }
   }
+  static isUpperTri(a){
+    if(!a.disposed){
+      for(let i=0;i<a.shape[0];i++){
+        for(let j=0;j<a.shape[1];j++){
+          if(i>j) if(a.data[i][j] != 0) return false;
+        }
+      }
+      return true;
+    }else{
+      console.erorr("Matrix has been disposed!");
+      return false;
+    }
+  }
+  static isLowerTri(a){
+    if(!a.disposed){
+      for(let i=0;i<a.shape[0];i++){
+        for(let j=0;j<a.shape[1];j++){
+          if(i<=j) if(a.data[i][j] != 0) return false;
+        }
+      }
+      return true;
+    }else{
+      console.erorr("Matrix has been disposed!");
+      return false;
+    }
+  }
   static scalarOperate(a,fn){
     if(!a.disposed){
       for(let i=0;i<a.shape[0];i++){
@@ -337,8 +363,8 @@ class Matrix{
     if(shape[0] == shape[1]){
       let temp = Matrix.fixed(shape,val);
       for(let i=0;i<shape[0];i++){
-        for(let j=i+1;j<shape[1];j++){
-          temp.data[i][j] = 0;
+        for(let j=0;j<shape[1];j++){
+          if(i<=j) temp.data[i][j] = 0;
         }
       }
       return temp;
@@ -388,7 +414,7 @@ class Matrix{
     return this.data[i][j];
   }
   set(i,j,v){
-    this.data[i,j] = v;
+    this.data[i][j] = v;
     return this;
   }
   getRow(r){
@@ -1167,6 +1193,29 @@ class Matrix{
     }else{
         console.error(`Matrix is not a square matrix!  Matrix shape: [${this.shape[0]},${this.shape[1]}]`);
         return false;
+    }
+  }
+  LUDecompose(){
+    if(!this.disposed){
+      if(this.shape[0] == this.shape[1]){
+        let U = this.new();
+        let L = Matrix.identity(this.shape);
+        for(let i=0;i<this.shape[1];i++){
+          for(let j=i+1;j<this.shape[0];j++){
+            L.data[j][i] = U.data[j][i]/U.data[i][i];
+            for(let k=0;k<this.shape[0];k++){
+              U.data[j][k] = U.data[j][k] - L.data[j][i]*U.data[i][k];
+            }
+          }
+        }
+        return [U,L];
+      }else{
+        console.error(`This matrix is not square!  LU decomposition only implemented for square matricies!  This matrix has the shape: [${this.shape[0]},${this.shape[1]}]`);
+        return false;
+      }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
     }
   }
 }

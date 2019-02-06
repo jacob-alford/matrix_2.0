@@ -246,6 +246,19 @@ class Matrix{
       return false;
     }
   }
+  static isDiagonal(a){
+    if(!a.disposed){
+      for(let i=0;i<a.shape[0];i++){
+        for(let j=0;j<a.shape[1];j++){
+          if(i!=j) if(a.data[i][j] != 0) return false;
+        }
+      }
+      return true;
+    }else{
+      console.erorr("Matrix has been disposed!");
+      return false;
+    }
+  }
   static scalarOperate(a,fn){
     if(!a.disposed){
       for(let i=0;i<a.shape[0];i++){
@@ -296,6 +309,15 @@ class Matrix{
       return acc;
     }else{
       throw `Matrix has been disposed! Cannot apply reduction: ${fn.toString()}`;
+    }
+  }
+  reduce(init,fn){
+    try{
+      return Matrix.reduce(this,init,fn);
+    }
+    catch(error){
+      console.error(error);
+      return false;
     }
   }
   toRowArray(){
@@ -381,7 +403,7 @@ class Matrix{
       }
       return temp;
     }else{
-      console.error(`An upper triangular matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
+      console.error(`A diagonal matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
       return false;
     }
   }
@@ -389,7 +411,7 @@ class Matrix{
     if(shape[0] == shape[1]){
       return Matrix.diagonal(shape);
     }else{
-      console.error(`An upper triangular matrix must be square!  Shape recieved: [${shape[0]},${shape[1]}]`);
+      console.error(`Identity matricies are square!  Shape recieved: [${shape[0]},${shape[1]}]`);
       return false;
     }
   }
@@ -947,6 +969,34 @@ class Matrix{
     }
   }
   // --- Reduction ---
+  max(){
+    if(!this.disposed){
+      try{
+        return Matrix.reduce(this,-Infinity,(acc,v) => (acc>=v)?acc:v);
+      }
+      catch(error){
+        console.error(error);
+        return false;
+      }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
+    }
+  }
+  min(){
+    if(!this.disposed){
+      try{
+        return this.reduce(Infinity,(acc,v) => (acc<v)?acc:v);
+      }
+      catch(error){
+        console.error(error);
+        return false;
+      }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
+    }
+  }
   sum(){
     try{
       return Matrix.reduce(this,0,(a,v) => a+v);
@@ -1111,6 +1161,50 @@ class Matrix{
     }
   }
   // --- Linear Algebra ---
+  FrobeniusNorm(p=2){
+    if(!this.disposed){
+      try{
+        return Math.pow(Matrix.reduce(this,0,(acc,v) => acc += Math.pow(Math.abs(v),p)),1/p);
+      }
+      catch(error){
+        console.error(error);
+        return false;
+      }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
+    }
+  }
+  pNorm(p=1){
+    if(!this.disposed){
+      if(p == 1){
+        let cols = this.toColArray();
+        let max = 0;
+        cols.forEach(c => {
+          let temp = c.sum();
+          if(temp > max) max = temp;
+        });
+        return max;
+      }else if(p == Infinity || p == "inf" || p == "Infinity" || p == "Inf"){
+        let rows = this.toRowArray();
+        let max = 0;
+        rows.forEach(c => {
+          let temp = c.sum();
+          if(temp > max) max = temp;
+        });
+        return max;
+      }else if(p == 2){
+        console.error(`2-norm isn't yet implemented! :-(`);
+        return false;
+      }else{
+        console.error(`First argument for p-norm unrecognized!  Here's what was recieved: ${p}`);
+        return false;
+      }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
+    }
+  }
   transpose(){
     if(!this.disposed){
       let newData = [];

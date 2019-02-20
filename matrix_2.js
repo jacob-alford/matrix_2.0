@@ -57,7 +57,7 @@ const isNumericArray = a => {
   return check;
 }
 class Matrix{
-  constructor(data,shape,shape2){
+  constructor(data,shape,shape2 = {colHeaders:"j",rowHeaders:"i"},options = {colHeaders:"j",rowHeaders:"i"}){
     if(data !== undefined){
       if(Array.isArray(data)){
         if(isNestedArray(data)){
@@ -75,6 +75,51 @@ class Matrix{
                 this.data = newData;
                 this.length = this.shape[0] * this.shape[1];
                 this.disposed = false;
+                if(typeof options.colHeaders == "string"){
+                  this.colHeaders = [];
+                  for(let j=0;j<this.shape[1];j++){
+                    this.colHeaders.push(`${options.colHeaders}${j}`);
+                  }
+                }else if(Array.isArray(options.colHeaders)){
+                  if(options.colHeaders.length == this.shape[1]){
+                    this.colHeaders = options.colHeaders;
+                  }else{
+                    console.error(`Unable to set column headers properly, shape mismatch between matrix shape and column-header length.  Matrix shape: [${this.shape[0]},${this.shape[1]}]; Row header length: ${options.rowHeaders.length}; Column header length: ${options.colHeaders.length}.  Setting columns headers to default.`);
+                    this.colHeaders = [];
+                    for(let j=0;j<this.shape[1];j++){
+                      this.colHeaders.push(`j${j}`);
+                    }
+                  }
+                }else{
+                  console.error(`Unable to set headers properly, type not recognized.  Expecting either a string, or an array; but recieved: ${typeof options.rowHeaders}, and ${typeof options.colHeaders}.  Setting to default headers.`);
+                  this.colHeaders = [];
+                  for(let j=0;j<this.shape[1];j++){
+                    this.colHeaders.push(`j${j}`);
+                  }
+                }
+                if(typeof options.rowHeaders == "string"){
+                  this.rowHeaders = [];
+                  for(let j=0;j<this.shape[0];j++){
+                    this.rowHeaders.push(`${options.rowHeaders}${j}`);
+                  }
+                }else if(Array.isArray(options.rowHeaders)){
+                  if(options.rowHeaders.length == this.shape[0]){
+                    this.rowHeaders = options.rowHeaders;
+                  }else{
+                    console.error(`Unable to set row headers properly, shape mismatch between matrix shape and row-header length.  Matrix shape: [${this.shape[0]},${this.shape[1]}]; Row header length: ${options.rowHeaders.length}; Column header length: ${options.colHeaders.length}.  Setting row headers to default.`);
+                    this.rowHeaders = [];
+                    for(let j=0;j<this.shape[0];j++){
+                      this.rowHeaders.push(`i${j}`);
+                    }
+                  }
+                }else{
+                  console.error(`Unable to set row-headers properly, type not recognized.  Expecting either a string, or an array; but recieved: ${typeof options.rowHeaders}, and ${typeof options.colHeaders}.  Setting to default row-headers.`);
+                  this.rowHeaders = [];
+                  for(let j=0;j<this.shape[0];j++){
+                    this.rowHeaders.push(`i${j}`);
+                  }
+                }
+
               }else{
                 console.error("One or more empty values for inferred shape in data array!");
                 return false;
@@ -106,6 +151,50 @@ class Matrix{
                     this.shape = shape;
                     this.length = this.shape[0] * this.shape[1];
                     this.disposed = false;
+                    if(typeof options.colHeaders == "string"){
+                      this.colHeaders = [];
+                      for(let j=0;j<this.shape[1];j++){
+                        this.colHeaders.push(`${options.colHeaders}${j}`);
+                      }
+                    }else if(Array.isArray(options.colHeaders)){
+                      if(options.colHeaders.length == this.shape[1]){
+                        this.colHeaders = options.colHeaders;
+                      }else{
+                        console.error(`Unable to set column headers properly, shape mismatch between matrix shape and column-header length.  Matrix shape: [${this.shape[0]},${this.shape[1]}]; Row header length: ${options.rowHeaders.length}; Column header length: ${options.colHeaders.length}.  Setting columns headers to default.`);
+                        this.colHeaders = [];
+                        for(let j=0;j<this.shape[1];j++){
+                          this.colHeaders.push(`j${j}`);
+                        }
+                      }
+                    }else{
+                      console.error(`Unable to set column-headers properly, type not recognized.  Expecting either a string, or an array; but recieved: ${typeof options.rowHeaders}, and ${typeof options.colHeaders}.  Setting to default headers.`);
+                      this.colHeaders = [];
+                      for(let j=0;j<this.shape[1];j++){
+                        this.colHeaders.push(`j${j}`);
+                      }
+                    }
+                    if(typeof options.rowHeaders == "string"){
+                      this.rowHeaders = [];
+                      for(let j=0;j<this.shape[0];j++){
+                        this.rowHeaders.push(`${options.rowHeaders}${j}`);
+                      }
+                    }else if(Array.isArray(options.rowHeaders)){
+                      if(options.rowHeaders.length == this.shape[0]){
+                        this.rowHeaders = options.rowHeaders;
+                      }else{
+                        console.error(`Unable to set row headers properly, shape mismatch between matrix shape and row-header length.  Matrix shape: [${this.shape[0]},${this.shape[1]}]; Row header length: ${options.rowHeaders.length}; Column header length: ${options.colHeaders.length}.  Setting row headers to default.`);
+                        this.rowHeaders = [];
+                        for(let j=0;j<this.shape[0];j++){
+                          this.rowHeaders.push(`i${j}`);
+                        }
+                      }
+                    }else{
+                      console.error(`Unable to set row-headers properly, type not recognized.  Expecting either a string, or an array; but recieved: ${typeof options.rowHeaders}, and ${typeof options.colHeaders}.  Setting to default row-headers.`);
+                      this.rowHeaders = [];
+                      for(let j=0;j<this.shape[0];j++){
+                        this.rowHeaders.push(`i${j}`);
+                      }
+                    }
                   }else{
                     console.error("Shape mismatch between [shape] parameter, and entries in data!");
                     return false;
@@ -139,6 +228,50 @@ class Matrix{
                   this.shape = [shape,shape2];
                   this.length = this.shape[0] * this.shape[1];
                   this.disposed = false;
+                  if(typeof options.colHeaders == "string"){
+                    this.colHeaders = [];
+                    for(let j=0;j<this.shape[1];j++){
+                      this.colHeaders.push(`${options.colHeaders}${j}`);
+                    }
+                  }else if(Array.isArray(options.colHeaders)){
+                    if(options.colHeaders.length == this.shape[1]){
+                      this.colHeaders = options.colHeaders;
+                    }else{
+                      console.error(`Unable to set column headers properly, shape mismatch between matrix shape and column-header length.  Matrix shape: [${this.shape[0]},${this.shape[1]}]; Row header length: ${options.rowHeaders.length}; Column header length: ${options.colHeaders.length}.  Setting columns headers to default.`);
+                      this.colHeaders = [];
+                      for(let j=0;j<this.shape[1];j++){
+                        this.colHeaders.push(`j${j}`);
+                      }
+                    }
+                  }else{
+                    console.error(`Unable to set column headers properly, type not recognized.  Expecting either a string, or an array; but recieved: ${typeof options.rowHeaders}, and ${typeof options.colHeaders}.  Setting to default column headers.`);
+                    this.colHeaders = [];
+                    for(let j=0;j<this.shape[1];j++){
+                      this.colHeaders.push(`j${j}`);
+                    }
+                  }
+                  if(typeof options.rowHeaders == "string"){
+                    this.rowHeaders = [];
+                    for(let j=0;j<this.shape[0];j++){
+                      this.rowHeaders.push(`${options.rowHeaders}${j}`);
+                    }
+                  }else if(Array.isArray(options.rowHeaders)){
+                    if(options.rowHeaders.length == this.shape[0]){
+                      this.rowHeaders = options.rowHeaders;
+                    }else{
+                      console.error(`Unable to set row headers properly, shape mismatch between matrix shape and row-header length.  Matrix shape: [${this.shape[0]},${this.shape[1]}]; Row header length: ${options.rowHeaders.length}; Column header length: ${options.colHeaders.length}.  Setting row headers to default.`);
+                      this.rowHeaders = [];
+                      for(let j=0;j<this.shape[0];j++){
+                        this.rowHeaders.push(`i${j}`);
+                      }
+                    }
+                  }else{
+                    console.error(`Unable to set row-headers properly, type not recognized.  Expecting either a string, or an array; but recieved: ${typeof options.rowHeaders}, and ${typeof options.colHeaders}.  Setting to default row-headers.`);
+                    this.rowHeaders = [];
+                    for(let j=0;j<this.shape[0];j++){
+                      this.rowHeaders.push(`i${j}`);
+                    }
+                  }
                 }else{
                   console.error("Didn't recieve number as second shape parameter!  Shape parameters must be an array of two values, or two parameters of numbers!");
                   return false;
@@ -224,7 +357,7 @@ class Matrix{
     if(!a.disposed){
       for(let i=0;i<a.shape[0];i++){
         for(let j=0;j<a.shape[1];j++){
-          if(i>j) if(a.data[i][j] != 0) return false;
+          if(i>j) if(Math.round(a.data[i][j]) != 0) return false;
         }
       }
       return true;
@@ -237,7 +370,7 @@ class Matrix{
     if(!a.disposed){
       for(let i=0;i<a.shape[0];i++){
         for(let j=0;j<a.shape[1];j++){
-          if(i<=j) if(a.data[i][j] != 0) return false;
+          if(i<j) if(Math.round(a.data[i][j]) != 0) return false;
         }
       }
       return true;
@@ -416,7 +549,7 @@ class Matrix{
     }
   }
   // --- Display ---
-  print(verbose = true){
+  toString(verbose = true){
     let str = `Matrix Parameters:\n`;
     if(verbose) str += `----Shape: [${this.shape[0]},${this.shape[1]}]\n`;
     if(verbose) str += `---Length: ${this.length}\n`;
@@ -428,8 +561,11 @@ class Matrix{
         str += `${this.data[i][j]} `;
       }
     }
-    console.log(str);
-    return true;
+    return str;
+  }
+  print(verbose = true){
+    console.log(this.toString(verbose));
+    return this;
   }
   // --- Data ---
   get(i,j){
@@ -1161,6 +1297,49 @@ class Matrix{
     }
   }
   // --- Linear Algebra ---
+  static backSub(mat,vec){
+    let x = Matrix.fixed(vec.shape,0);
+    let b;
+    if(vec.shape[1] == 1) b = vec.new();
+    else{
+        console.error(`Input vector must be column vector for forward substitution!  Received vector/matrix of shape: [${vec.shape[0]},${vec.shape[1]}]`);
+        return false;
+    }
+    if(!Matrix.isUpperTri(mat)){
+        console.error(`Specified matrix must be lower triangular for forward substitution!`);
+        return false;
+    }
+    x.set(b.shape[0]-1,0,b.get(b.shape[0]-1,0)/mat.get(mat.shape[0]-1,mat.shape[1]-1));
+    for(let i=mat.shape[0]-1;i>=0;i--){
+        let s = 0;
+        for(let j=i+1;j<mat.shape[0];j++){
+            s += mat.get(i,j)*x.get(j,0);
+        }
+        x.data[i][0] = (b.get(i,0)-s)/mat.get(i,i);
+    }
+    return x;
+  }
+  static forwardSub(mat,vec){
+    let x = Matrix.fixed(vec.shape,0);
+    let b;
+    if(vec.shape[1] == 1) b = vec.new();
+    else{
+        console.error(`Input vector must be column vector for forward substitution!  Received vector/matrix of shape: [${vec.shape[0]},${vec.shape[1]}]`);
+        return false;
+    }
+    if(!Matrix.isLowerTri(mat)){
+        console.error(`Specified matrix must be lower triangular for forward substitution!`);
+        return false;
+    }
+    for(let i=0;i<mat.shape[0];i++){
+        x.set(i,0,b.get(i,0));
+        for(let j=0;j<i;j++){
+            x.data[i][0] -= mat.get(i,j)*x.get(j,0);
+        }
+        x.data[i][0] /= mat.get(i,i);
+    }
+    return x;
+  }
   FrobeniusNorm(p=2){
     if(!this.disposed){
       try{
@@ -1289,7 +1468,45 @@ class Matrix{
         return false;
     }
   }
-  LUDecompose(){
+  LUPGauss(){
+    if(!this.disposed){
+      if(this.shape[0] == this.shape[1]){
+        let U = this.new();
+        let L = Matrix.fixed(this.shape,0);
+        let P = Matrix.identity(this.shape);
+        for(let i=0;i<this.shape[1];i++){
+          // --- Sorts the rows based on size ---
+          let maxColValue = U.data[i][i];
+          let maxColRow = i;
+          for(let j=i+1;j<this.shape[0];j++){
+            if(Math.abs(U.data[j][i]) > maxColValue){
+              maxColValue = Math.abs(U.data[j][i]);
+              maxColRow = j;
+            }
+          }
+            if(i != maxColRow){
+            L.swapRows(i,maxColRow);
+            U.swapRows(i,maxColRow);
+            P.swapRows(i,maxColRow);
+            }
+          for(let j=i+1;j<this.shape[0];j++){
+            L.data[j][i] = U.data[j][i]/U.data[i][i];
+            for(let k=0;k<this.shape[0];k++){
+              U.data[j][k] = U.data[j][k] - L.data[j][i]*U.data[i][k];
+            }
+          }
+        }
+        return [L.add(Matrix.identity(this.shape)),U,P];
+      }else{
+        console.error(`This matrix is not square!  LU decomposition only implemented for square matricies!  This matrix has the shape: [${this.shape[0]},${this.shape[1]}]`);
+        return false;
+      }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
+    }
+  }
+  LUGauss(){
     if(!this.disposed){
       if(this.shape[0] == this.shape[1]){
         let U = this.new();
@@ -1302,11 +1519,19 @@ class Matrix{
             }
           }
         }
-        return [U,L];
+        return [L,U];
       }else{
         console.error(`This matrix is not square!  LU decomposition only implemented for square matricies!  This matrix has the shape: [${this.shape[0]},${this.shape[1]}]`);
         return false;
       }
+    }else{
+      console.error("This matrix has been disposed!");
+      return false;
+    }
+  }
+  det(){
+    if(!this.disposed){
+      
     }else{
       console.error("This matrix has been disposed!");
       return false;
